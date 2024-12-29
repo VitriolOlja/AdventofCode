@@ -71,7 +71,15 @@ int main() {
       std::vector<int> current_network = {node}; //vector to store network. 
       std::vector<int> candidates; //here we push back all neighbours of the component.
 
-      candidates.
+      for (const int& neighbour : graph[node]) {
+        
+      }
+
+      for (const int& n : current_network) {
+        if (graph[n].count(node)) {
+          
+        }
+      }
 
 
 

@@ -3,6 +3,6 @@ gitignore
 .vscode/settings.json
 .vscode/tasks.json
 
-*/build
+**/build
 
-*.vscode
+**.vscode
