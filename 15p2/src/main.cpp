@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <memory>
+
 #include "Direction.h"
 #include "Entity.h"
 #include "Robot.h"
@@ -42,11 +43,6 @@ void display(
   
   std::cout << std::flush;
 }
-
-
-
-
-
 
 
 
@@ -119,19 +115,13 @@ int main()
     }
   }
 
-  robot->move(DIRECTION::LEFT, entities) {
-
+  for (const DIRECTION &dir : instructions) {
+    if (Robot.can_move(dir, entities) {
+      std::cout << "yes i can moveeee" std::endl;
+    }
   }
 
-  /* for (DIRECTION instruction : instructions) {
-    robot.move
-  } */
-
   inputFile.close();
-
-  /* for (DIRECTION &instruction : instructions) {
-    robot.move(instruction, matrix);
-  } */
 
   return 0;
 }

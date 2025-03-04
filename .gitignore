@@ -6,3 +6,4 @@ gitignore
 **/build
 
 **.vscode
+*.exe
