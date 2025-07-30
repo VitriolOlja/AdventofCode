@@ -45,7 +45,7 @@ int main(void) {
       }
     }
       
-    connections[i] = current_connection; 
+    connections[i] = (uint16_t*)current_connection; 
   }
 
   //print 10
