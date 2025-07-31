@@ -11,9 +11,6 @@
 
 #define FILE_NAME "input.txt"
 
-
-#define MALLOC_INCREASE_WIDTH 100
-
 int main(void)
 {
   FILE *fptr = fopen(FILE_NAME, "r");
