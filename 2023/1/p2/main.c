@@ -121,6 +121,6 @@ int main(void)
   }
 
   printf("sum: %d", sum);
-
+  fclose(fptr);
   return 0;
 }

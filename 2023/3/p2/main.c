@@ -264,4 +264,5 @@ int main(void)
 
   free(map);
   free(tmp);
+  fclose(fptr);
 }

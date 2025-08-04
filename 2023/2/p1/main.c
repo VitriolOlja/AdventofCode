@@ -129,5 +129,6 @@ int main(void)
   }
 
   printf("sum: %d", id_sum);
+  fclose(fptr);
   return 0;
 }

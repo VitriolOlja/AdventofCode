@@ -20,3 +20,8 @@ TotalMilliseconds : 93767.3178
 
 1 minute and 34 seconds. 
 that is quite bad. 
+
+Interesting. 
+
+One can consider the problem backwards aswell. mapping location -> seed. 
+This way we can map until we find a seed that is viable.

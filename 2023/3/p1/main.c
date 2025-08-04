@@ -213,7 +213,7 @@ int main(void)
 
 
 
-
+  fclose(fptr);
   free(map);
   free(tmp);
 }

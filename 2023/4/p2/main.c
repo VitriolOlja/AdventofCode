@@ -128,6 +128,6 @@ int main(void) {
   }
 
   printf("sum: %d \n", sum);
-  
+  fclose(fptr);
   return 0;
 }
