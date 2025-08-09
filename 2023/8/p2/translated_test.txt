@@ -1,0 +1,10 @@
+LR
+
+AAA = (AAB, XXX)
+AAB = (XXX, AAZ)
+AAZ = (AAB, XXX)
+BAA = (BAB, XXX)
+BAB = (BAC, BAC)
+BAC = (BAZ, BAZ)
+BAZ = (BAB, BAB)
+XXX = (XXX, XXX)
