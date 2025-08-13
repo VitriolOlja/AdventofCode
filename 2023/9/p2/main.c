@@ -112,5 +112,6 @@ int main(void)
 
   printf("Total: %" PRId64 "\n", total_oasis);
 
+  fclose(fptr);
   return 0;
 }

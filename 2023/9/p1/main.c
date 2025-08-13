@@ -82,7 +82,6 @@ int main(void)
         sum = 0;
         for(int i = 0; i < right; i++) {
           numbers[i] = numbers[i + 1] - numbers[i]; //take the difference. 
-          //yes this does not work becase we are changing the values we are calculating with. 
           sum += numbers[i] < 0 ? -numbers[i] : numbers[i];
         }
         right--;
@@ -98,7 +97,6 @@ int main(void)
       //calculate the new rows and the sum of them. 
       //printf("Numbers[right]: %lld, Current: %d \n", numbers[right + 1], current);
       int64_t last_number = 0;
-      printf("right: %d, current: %d\n", right, (int)current);
       printf("last_numbers: ");
       for (int i = right + 1; i < (int) current; i++) {
         printf("%" PRId64 " ", last_number);
@@ -112,5 +110,6 @@ int main(void)
 
   printf("Total: %" PRId64 "\n", total_oasis);
 
+  fclose(fptr);
   return 0;
 }

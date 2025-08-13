@@ -52,6 +52,7 @@ int main(void){
 
   if (!instructions) {
     printf("Failed to allocate memory for instructions.");
+    free(instructions);
     fclose(fptr);
   }
 
