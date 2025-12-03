@@ -17,6 +17,7 @@ struct TrieNode {
   // bitfield, 
   // it will most likely align to 1 byte anyways so no advantage over bool really.
 };
+
 typedef struct TrieNode TrieNode;
 
 TrieNode* get_alpha_number_trie();
