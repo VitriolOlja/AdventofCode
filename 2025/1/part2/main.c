@@ -45,5 +45,6 @@ int main()  {
 
   printf("Count: %d\n", count);
 
+  fclose(fptr);
   return 0;
 }
