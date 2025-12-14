@@ -2,29 +2,6 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-
-static const uint64_t pow10_table[] = {
-    1ULL,
-    10ULL,
-    100ULL,
-    1000ULL,
-    10000ULL,
-    100000ULL,
-    1000000ULL,
-    10000000ULL,
-    100000000ULL,
-    1000000000ULL,
-    10000000000ULL,
-    100000000000ULL,
-    1000000000000ULL,
-    10000000000000ULL,
-    100000000000000ULL,
-    1000000000000000ULL,
-    10000000000000000ULL,
-    100000000000000000ULL,
-    1000000000000000000ULL,
-};
-
 #define pow10(n) (pow10_table[n])
 
 int main()
@@ -34,26 +11,9 @@ int main()
   int ch;
   // lets count what we need.
   uint32_t column_count = 0;
-  uint8_t first = 1;
-  while ((ch = fgetc(fptr)) != EOF)
+  while ((ch = fgetc(fptr)) != '\n')
   {
-    if ('0' <= ch && ch <= '9')
-    {
-      first = 1;
-    }
-    if (ch == ' ' && first)
-    {
-      column_count++;
-      first = 0;
-    }
-    if (ch == '\n')
-    {
-      if (first)
-      {
-        column_count++;
-      }
-      break;
-    }
+    column_count++;
   }
   uint32_t row_count = 1;
   while ((ch = fgetc(fptr)) != EOF)
@@ -64,123 +24,92 @@ int main()
     }
   }
 
-  // printf("rows: %d, columns: %d\n", row_count, column_count);
-
-  // not sure which direction is really best here
-  //  for access sake - we will access the columns - so maybe its best to invert it,
-  // but it is so short?
-  void *memory_arena = malloc(column_count * sizeof(uint16_t *) + column_count * row_count * sizeof(uint16_t));
-  uint16_t **map = (uint16_t **)memory_arena;
-  uint16_t *data_start = (uint16_t *)(map + column_count);
-  for (uint16_t col = 0; col < column_count; col++)
+  void *memory_arena = malloc(row_count * sizeof(char *) + column_count * row_count * sizeof(char));
+  char **map = (char **)memory_arena;
+  char *data_start = (char *)(map + row_count);
+  for (uint16_t row = 0; row < row_count; row++)
   {
-    map[col] = data_start + col * row_count;
+    map[row] = data_start + row * column_count;
   }
+
   fseek(fptr, 0, SEEK_SET);
+  // printf("rows: %lu, columns: %lu\n", row_count, column_count);
 
-  uint32_t current_number = 0;
-  uint32_t current_row = 0;
   uint32_t current_column = 0;
-  first = 1;
+  uint32_t current_row = 0;
   while ((ch = fgetc(fptr)) != EOF)
   {
-    // printf("%c", ch);
-    if (current_row >= row_count)
+    if (ch == '\n')
     {
-      break;
-    }
-    else if ('0' <= ch && ch <= '9')
-    {
-      first = 1;
-      current_number = current_number * 10 + (ch - '0');
-    }
-    else if (ch == ' ' && first)
-    {
-      // printf("saving1 %d to col: %d, row: %d\n", current_number, current_column, current_row);
-      map[current_column][current_row] = current_number;
-      // puts("saved1\n");
-      current_number = 0;
-      current_column++;
-      first = 0;
-    }
-    else if (ch == '\n')
-    {
-      // printf("first: %d\n", first);
-      if (first)
-      {
-        // printf("saving2 %d to col: %d, row: %d\n", current_number, current_column, current_row);
-        map[current_column][current_row] = current_number; // crashes here.
-        // puts("saved2\n");
-        current_number = 0;
-        first = 0;
-      }
-      current_column = 0;
       current_row++;
+      current_column = 0;
+      continue;
     }
+    map[current_row][current_column] = ch;
+    current_column++;
   }
 
-  //uint64_t biggest = 0;
-  //for (int i = 0; i < column_count; i++) {
-  //  for (int j = 0; j < row_count; j++) {
-  //    if (map[i][j] > biggest) {
-  //      biggest = map[i][j];
-  //    }
+  //for (size_t i = 0; i < row_count; i++)
+  //{
+  //  for (size_t j = 0; j < column_count; j++)
+  //  {
+  //    printf("%c", map[i][j]);
   //  }
+  //  printf("\n");
   //}
-  //printf("biggest: %llu\n", biggest);
+  // we want to read column wise. until we have a empty column
 
-  // now we just need the last row of multiplication
-  fseek(fptr, -10, SEEK_CUR);
+  uint8_t multiplication = 1;
   uint64_t sum = 0;
-  current_column = 0;
-  while ((ch = fgetc(fptr)) != EOF)
+  uint64_t current_number = 0;
+  for (size_t j = 0; j < column_count; j++)
   {
-    if (ch == '*')
+    char last_row = map[row_count - 1][j];
+    if (last_row == '*')
     {
-      uint64_t prod = 1;
-      for (int digit = 0; digit < 5; digit++) {
-        uint32_t column_number = 0;
-        for (int i = 0; i < row_count; i++)
-        { 
-          uint16_t this_digit = (map[current_column][i] % pow10(digit + 1)) / pow10(digit);
-          if (this_digit > 0) {
-            column_number *= 10;
-            column_number += this_digit;
-          }
-        }
-        if (column_number > 0) {
-          printf("column number: %lu\n", column_number);
-          prod *= column_number;
-        }
-      }
-      printf("prod: %llu\n", prod);
-      sum += prod;
-      current_column++;
+      //printf("multiplication\n");
+      multiplication = 1;
+      current_number = 1;
     }
-    else if (ch == '+')
+    else if (last_row == '+')
     {
-      uint64_t inside_sum = 0;
-      for (int digit = 0; digit < 5; digit++) {
-        uint32_t column_number = 0;
-        for (int i = 0; i < row_count; i++)
-        { 
-          uint16_t this_digit = (map[current_column][i] % pow10(digit + 1)) / pow10(digit);
-          if (this_digit > 0) {
-            column_number *= 10;
-            column_number += this_digit;
-          }
-        }
-        if (column_number > 0) {
-          printf("column number: %lu\n", column_number);
-          inside_sum += column_number;
-        }
+      //printf("addition\n");
+      multiplication = 0;
+    }
+    uint64_t column_number = 0;
+    uint8_t all_space = 1;
+    for (size_t i = 0; i < row_count - 1; i++)
+    {
+      if ('0' <= map[i][j] && map[i][j] <= '9')
+      {
+        all_space = 0;
+        column_number = column_number * 10 + (map[i][j] - '0');
       }
-      sum += inside_sum;
-      current_column++;
+    }
+    //printf("column number: %llu\n", column_number);
+    if (all_space)
+    {
+      //printf("current number %llu\n", current_number);
+      sum += current_number;
+      current_number = 0;
+    }
+    else
+    {
+      if (multiplication)
+      {
+        current_number *= column_number;
+      }
+      else
+      {
+        current_number += column_number;
+      }
     }
   }
 
-  printf("sum: %llu\n", sum);
+  //printf("current number %llu\n", current_number);
+  sum += current_number;
+
+  printf("sum: %llu", sum);
 
   free(memory_arena);
   return 0;
